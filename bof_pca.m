@@ -1,0 +1,9 @@
+function [train_out, test_out]=bof_pca(bof_train,bof_test)
+mn = mean(bof_train);
+train_out = bsxfun(@minus,bof_train,mn); % substract mean
+test_out = bsxfun(@minus,bof_test,mn);
+[coefs,scores,variances] = pca(train_out); % PCA
+pervar = cumsum(variances) / sum(variances);
+dims = max(find(pervar < 0.99)); % 0.99 confiodence 
+train_out = train_out*coefs(:,1:dims); % dims - keep this many dimensions
+test_out = test_out*coefs(:,1:dims); % result is in train_out and test_out
